@@ -1,4 +1,4 @@
-# vue-wfs-query-builder
+# vue-wfs-search
 
 ## Project setup
 ```
