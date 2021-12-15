@@ -1,6 +1,6 @@
 <script>
-import query_builder from '@/mixins/query_builder'
-import utils from '@/utils'
+import query_builder from '../mixins/query_builder'
+import utils from '../utils'
 
 export default {
 	mixins: [query_builder],

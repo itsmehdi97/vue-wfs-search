@@ -28,13 +28,14 @@
 	import {Vector as VectorLayer} from 'ol/layer';
 
 	import WFSSearch from '@/components/WFSSearch'
-
-
+	import WFS from 'ol/format/WFS';
+	import Point from 'ol/geom/Point';
+	import Feature from 'ol/Feature';
+	import GML from 'ol/format/GML';
 export default {
 	name: "Map",
 	components: {
 		WFSSearch,
-		Toggle,
 	},
 	data() {
 		return {
@@ -92,7 +93,7 @@ export default {
 			}),
 			vector,
 		];
-		this.map = new Map({
+		let x = new Map({
 			layers: layers,
 			target: 'map',
 			view: new View({
@@ -100,8 +101,34 @@ export default {
 				zoom: 5,
 			}),
 		});
-		this.map.on('click', (evt) => {
-			console.log(evt, evt.coordinate)
+		this.map = x
+		x.on('click', (evt) => {
+			console.log(evt, evt.coordinate);
+			
+			const wfs = new WFS();
+			var feature = new Feature({
+				geometry: new Point(evt.coordinate),
+				name: 'My Polygon',
+				title: 'asdf',
+				
+				
+			});
+			console.log(feature)
+
+			const format = new GML({})
+			const gml = format.writeGeometry(new Point(evt.coordinate_))
+
+			let node = wfs.writeTransaction([feature], [], [], {featureNS: 'http://localhost:8600/iran' ,featureType: 'iran:event', srsName: 'EPSG:3857', version: '1.1.0' })
+			fetch('http://localhost:8600/geoserver/wfs', {
+				method: 'POST',
+				body: new XMLSerializer().serializeToString(node)
+			})
+			.then(res=> res.json() )
+			.then(res => {
+				console.log('##', res)
+			})
+			console.log(node)
+			// wfs.writeFeatures(gml, {})
 		})
 	},
 	methods: {
